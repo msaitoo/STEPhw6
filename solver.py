@@ -1,5 +1,6 @@
 import numpy
 import sys
+import matplotlib.pyplot as pyplot
 
 if (len(sys.argv) != 2):
     print "usage: python %s N" % sys.argv[0]
@@ -19,19 +20,29 @@ def divideaxis(data):
     xindex = []
     yindex = []
     for i in range(len(data)):
-        xaxis.append(dat[i][0])
+        xaxis.append(data[i][0])
         xindex.append(i)
-        yaxis.append(dat[i][1])
+        yaxis.append(data[i][1])
         yindex.append(i)
     return (xaxis, yaxis)
 
 def lowline (xaxis, yaxis, maxx, yindex, ordered):
+    low = []
     while xaxis[yindex] < maxx:
-        ordered.append([xaxis[yindex],yaxis[yindex]])
+        low.append([xaxis[yindex],yaxis[yindex]])
         xaxis.pop(yindex)
         yaxis.pop(yindex)
         miny = min(yaxis)
         yindex = yaxis.index(miny)
+    
+    axis = divideaxis(low)
+    while len(axis[0]) > 0:
+        smallx = min(axis[0])
+        index = axis[0].index(smallx)
+        ordered.append([axis[0][index], axis[1][index]])
+        axis[0].pop(index)
+        axis[1].pop(index)
+    
     return (ordered, xaxis, yaxis)
 
 def rearrangeCities(dat):
@@ -47,6 +58,7 @@ def rearrangeCities(dat):
     maxx = max(xaxis)
     yindex = yaxis.index(min(yaxis))
     low = lowline(xaxis, yaxis, maxx, yindex, ordered)
+    #print low[0]
     
     xaxis = low[1]
     yaxis = low[2]
@@ -76,3 +88,8 @@ cities = rearrangeCities(dat)
 distance = connectCities(cities)
 
 print distance
+
+pyplot.figure()
+for i in range(len(cities)):
+    pyplot.plot(cities[i][0], cities[i][1], "o")
+pyplot.show()
