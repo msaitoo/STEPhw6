@@ -35,6 +35,15 @@ def divideCities(data):
             above.append(data[i])
     return(below, above)
 
+def check(data, start):
+    for i in range(start, len(data)-2):
+        if distance(data[i], data[i+1]) > distance(data[i], data[i+2]):
+            chikai = data[i+2]
+            tooi = data[i+1]
+            data[i+1] = chikai
+            data[i+2] = tooi
+    return data
+
 def connectBelow(below, ordered = []):
     xaxis = divideaxis(below)[0]
     yaxis = divideaxis(below)[1]
@@ -45,11 +54,13 @@ def connectBelow(below, ordered = []):
         ordered.append([xaxis[index], yaxis[index]])
         xaxis.pop(index)
         yaxis.pop(index)
+    check(ordered, 0)
     return ordered
 
 def connectAbove(above, ordered):
     xaxis = divideaxis(above)[0]
     yaxis = divideaxis(above)[1]
+    start = len(ordered)
     
     while len(ordered) < numberofcities:
         maxx = max(xaxis)
@@ -57,9 +68,10 @@ def connectAbove(above, ordered):
         ordered.append([xaxis[index], yaxis[index]])
         xaxis.pop(index)
         yaxis.pop(index)
+    check(ordered, start)
     return ordered
 
-def connectcities(ordered):
+def totaldistance(ordered):
     traveldistance = 0
     for i in range(len(ordered)):
         try:
@@ -73,8 +85,9 @@ def connectcities(ordered):
 SouthNorth = divideCities(dat)
 south = connectBelow(SouthNorth[0])
 cities = connectAbove(SouthNorth[1], south)
+#cities = check(ordered)
 
-distance = connectcities(cities)
+distance = totaldistance(cities)
 print distance
 
 pyplot.figure()
