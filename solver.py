@@ -24,69 +24,54 @@ def divideaxis(data):
         yindex.append(i)
     return (xaxis, yaxis)
 
-def lowline (xaxis, yaxis, maxx, yindex, ordered):
-    low = []
-    while xaxis[yindex] < maxx:
-        low.append([xaxis[yindex],yaxis[yindex]])
-        xaxis.pop(yindex)
-        yaxis.pop(yindex)
-        miny = min(yaxis)
-        yindex = yaxis.index(miny)
+def divideCities(data):
+    midpoint = sum(divideaxis(dat)[1]) / len(divideaxis(dat)[1])
+    below, above = [], []
     
-    axis = divideaxis(low)
-    while len(axis[0]) > 0:
-        smallx = min(axis[0])
-        index = axis[0].index(smallx)
-        ordered.append([axis[0][index], axis[1][index]])
-        axis[0].pop(index)
-        axis[1].pop(index)
-    
-    return (ordered, xaxis, yaxis)
+    for i in range(len(data)):
+        if data[i][1] <= midpoint:
+            below.append(data[i])
+        else:
+            above.append(data[i])
+    return(below, above)
 
-def rearrangeCities(dat):
-    xaxis = divideaxis(dat)[0]
-    yaxis = divideaxis(dat)[1]
+def connectBelow(below, ordered = []):
+    xaxis = divideaxis(below)[0]
+    yaxis = divideaxis(below)[1]
     
-    ordered = []
-    mindex = xaxis.index(min(xaxis))
-    ordered.append([xaxis[mindex],yaxis[mindex]])
-    xaxis.pop(mindex)
-    yaxis.pop(mindex)
-    
-    maxx = max(xaxis)
-    yindex = yaxis.index(min(yaxis))
-    low = lowline(xaxis, yaxis, maxx, yindex, ordered)
-    
-    xaxis = low[1]
-    yaxis = low[2]
-    ordered = low[0]
-    
-    while len(ordered) < numberofcities:
-        xmax = max(xaxis)
-        maxdex = xaxis.index(xmax)
-        ordered.append([xaxis[maxdex], yaxis[maxdex]])
-        xaxis.pop(maxdex)
-        yaxis.pop(maxdex)
-    
+    while len(ordered) < len(below):
+        minx = min(xaxis)
+        index = xaxis.index(minx)
+        ordered.append([xaxis[index], yaxis[index]])
+        xaxis.pop(index)
+        yaxis.pop(index)
     return ordered
 
-def connectCities(xorder):
+def connectAbove(above, ordered):
+    xaxis = divideaxis(above)[0]
+    yaxis = divideaxis(above)[1]
+    
+    while len(ordered) < numberofcities:
+        maxx = max(xaxis)
+        index = xaxis.index(maxx)
+        ordered.append([xaxis[index], yaxis[index]])
+        xaxis.pop(index)
+        yaxis.pop(index)
+    return ordered
+
+def connectcities(ordered):
     traveldistance = 0
-    for i in range(len(xorder)):
+    for i in range(len(ordered)):
         try:
-            kyori = distance(xorder[i],xorder[i+1])
+            kyori = distance(ordered[i],ordered[i+1])
             traveldistance += kyori
         except IndexError:
-            kyori = distance(xorder[i], xorder[0])
+            kyori = distance(ordered[i], ordered[0])
             traveldistance += kyori
     return traveldistance
 
-cities = rearrangeCities(dat)
-distance = connectCities(cities)
+SouthNorth = divideCities(dat)
+south = connectBelow(SouthNorth[0])
+cities = connectAbove(SouthNorth[1], south)
 
-print distance
-
-pyplot.figure()
-for i in range(len(cities)):
-    pyplot.plot(cities[i][0], cities[i][1], "o")
-pyplot.show()
+distance = connectcities(cities)
