@@ -25,7 +25,8 @@ def divideaxis(data):
     return (xaxis, yaxis)
 
 def divideCities(data):
-    midpoint = sum(divideaxis(dat)[1]) / len(divideaxis(dat)[1])
+    midpoint = sum(divideaxis(data)[1]) / len(divideaxis(data)[1])
+    
     below, above = [], []
     
     for i in range(len(data)):
@@ -89,7 +90,8 @@ cities = connectAbove(SouthNorth[1], south)
 distance = totaldistance(cities)
 print distance
 
-pyplot.figure()
-for i in range(len(cities)):
-    pyplot.plot(cities[i][0], cities[i][1], "o")
-pyplot.show()
+def graph(cities):
+    pyplot.figure()
+    for i in range(len(cities)):
+        pyplot.plot(cities[i][0], cities[i][1], "o")
+    pyplot.show()
