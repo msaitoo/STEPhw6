@@ -15,10 +15,8 @@ def distance(city1, city2):
     return numpy.sqrt((city1[0] - city2[0]) ** 2 + (city1[1] - city2[1]) ** 2)
 
 def divideaxis(data):
-    xaxis = []
-    yaxis = []
-    xindex = []
-    yindex = []
+    xaxis, yaxis = [], []
+    xindex, yindex = [], []
     for i in range(len(data)):
         xaxis.append(data[i][0])
         xindex.append(i)
@@ -58,7 +56,6 @@ def rearrangeCities(dat):
     maxx = max(xaxis)
     yindex = yaxis.index(min(yaxis))
     low = lowline(xaxis, yaxis, maxx, yindex, ordered)
-    #print low[0]
     
     xaxis = low[1]
     yaxis = low[2]
