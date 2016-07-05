@@ -85,7 +85,6 @@ def totaldistance(ordered):
 SouthNorth = divideCities(dat)
 south = connectBelow(SouthNorth[0])
 cities = connectAbove(SouthNorth[1], south)
-#cities = check(ordered)
 
 distance = totaldistance(cities)
 print distance
