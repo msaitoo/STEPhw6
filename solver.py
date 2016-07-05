@@ -75,3 +75,9 @@ south = connectBelow(SouthNorth[0])
 cities = connectAbove(SouthNorth[1], south)
 
 distance = connectcities(cities)
+print distance
+
+pyplot.figure()
+for i in range(len(cities)):
+    pyplot.plot(cities[i][0], cities[i][1], "o")
+pyplot.show()
