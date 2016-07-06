@@ -42,95 +42,67 @@ def divideCities(data):
 
 def getdistances(city1, around):
     distances = []
-    
     for i in range(len(around)):
         dist = distance(city1, around[i])
         distances.append(dist)
-    
     return distances
 
-def ascendingx(data):
+def sortx(data, direction):
     order = []
     xaxis = divideaxis(data)[0]
     number = len(data)
     while len(order) < number:
-        minx = min(xaxis)
+        if direction == 'ascending':
+            minx = min(xaxis)
+        elif direction == 'descending':
+            minx = max(xaxis)
         index = xaxis.index(minx)
         order.append(data[index])
         xaxis.pop(index)
         data.pop(index)
     return order
 
-def descendingx(data):
-    order = []
-    xaxis = divideaxis(data)[0]
-    number = len(data)
-    while len(order) < number:
-        minx = max(xaxis)
-        index = xaxis.index(minx)
-        order.append(data[index])
-        xaxis.pop(index)
-        data.pop(index)
-    return order
+def decidenext(jyunban, ordered, area):
+    if area == 'north':
+        big = jyunban[0][0]
+        small = ordered[-1][0]
+    elif area == 'south':
+        big = ordered[-1][0]
+        small = jyunban[0][0]
+    
+    distances = getdistances(ordered[-1], jyunban)
+    mindist = min(distances)
+    index = distances.index(mindist)
+    if big >= small:
+        if abs(ordered[-1][1]-jyunban[index][1]) <= abs(ordered[-1][1]-jyunban[0][1]):
+            ordered.append(jyunban[index])
+            jyunban.pop(index)
+        else:
+            ordered.append(jyunban[0])
+            jyunban.pop(0)
+    else:
+        ordered.append(jyunban[index])
+        jyunban.pop(index)
+    return (ordered)
 
 def connectBelow(below, ordered = []):
     "Sort Southern cities into order"
-    jyunban = ascendingx(below)
+    jyunban = sortx(below, 'ascending')
     minami = len(jyunban)
     ordered.append(jyunban[0])
     jyunban.pop(0)
     
     while len(ordered) < minami:
-        around = []
-        for i in range(len(jyunban)):
-            around.append(jyunban[i])
-        if around[0][0] <= ordered[-1][0]:
-            distances = getdistances(ordered[-1], around)
-            mindist = min(distances)
-            index = distances.index(mindist)
-            if abs(ordered[-1][1]-jyunban[index][1]) <= abs(ordered[-1][1]-jyunban[0][1]):
-                ordered.append(jyunban[index])
-                jyunban.pop(index)
-            else:
-                ordered.append(jyunban[0])
-                jyunban.pop(0)
-        else:
-            distances = getdistances(ordered[-1], around)
-            mindist = min(distances)
-            index = distances.index(mindist)
-            if abs(ordered[-1][1]-jyunban[index][1]) <= abs(ordered[-1][1]-jyunban[0][1]):
-                ordered.append(jyunban[index])
-                jyunban.pop(index)
-            else:
-                ordered.append(jyunban[0])
-                jyunban.pop(0)
+        decidenext(jyunban, ordered, 'south')
     
     return ordered
 
 def connectAbove(above, ordered):
     "Sort Northern cities into order"
-    jyunban = descendingx(above)
+    jyunban = sortx(above, 'descending')
     
     while len(ordered) < numberofcities:
-        around = []
-        for i in range(len(jyunban)):
-            around.append(jyunban[i])
-        if around[0][0] >= ordered[-1][0]:
-            distances = getdistances(ordered[-1], around)
-            mindist = min(distances)
-            index = distances.index(mindist)
-            if abs(ordered[-1][1]-jyunban[index][1]) <= abs(ordered[-1][1]-jyunban[0][1]):
-                ordered.append(jyunban[index])
-                jyunban.pop(index)
-            else:
-                ordered.append(jyunban[0])
-                jyunban.pop(0)
-        else:
-            distances = getdistances(ordered[-1], around)
-            mindist = min(distances)
-            index = distances.index(mindist)
-            ordered.append(jyunban[index])
-            jyunban.pop(index)
+        decidenext(jyunban, ordered, 'north')
     
     return ordered
 
