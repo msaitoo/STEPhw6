@@ -41,6 +41,7 @@ def divideCities(data):
     return(below, above)
 
 def getdistances(city1, around):
+    "Get a list of distances to each points in [around] from city 1"
     distances = []
     for i in range(len(around)):
         dist = distance(city1, around[i])
@@ -48,6 +49,7 @@ def getdistances(city1, around):
     return distances
 
 def sortx(data, direction):
+    "rearrange cities into x values order"
     order = []
     xaxis = divideaxis(data)[0]
     number = len(data)
@@ -63,6 +65,7 @@ def sortx(data, direction):
     return order
 
 def decidenext(jyunban, ordered, area):
+    "decides where the next destination is"
     if area == 'north':
         big = jyunban[0][0]
         small = ordered[-1][0]
@@ -127,7 +130,7 @@ travel = totaldistance(allcities)
 print travel
 
 def graph(cities):
-    "Locations of the cities"
+    "cities' locations and paths one will take"
     pyplot.figure()
     cmap = mpl.cm.cool
     for i in range(len(cities)):
@@ -137,3 +140,10 @@ def graph(cities):
         except IndexError:
             pyplot.plot((cities[i][0], cities[0][0]), (cities[i][1],cities[0][1]), "-", color='purple')
     pyplot.show()
+
+print 'Would you like to graph the result? Type yes or no.'
+answer = raw_input()
+if answer == 'yes':
+    graph(allcities)
+else:
+    print'Sure? Ok then, bye~~'
