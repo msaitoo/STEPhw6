@@ -1,6 +1,7 @@
 import numpy
 import sys
 import matplotlib.pyplot as pyplot
+import matplotlib as mpl
 
 if (len(sys.argv) != 2):
     print "usage: python %s N" % sys.argv[0]
@@ -101,7 +102,13 @@ distance = totaldistance(cities)
 print distance
 
 def graph(cities):
+    "cities' locations and paths one will take"
     pyplot.figure()
+    cmap = mpl.cm.cool
     for i in range(len(cities)):
         pyplot.plot(cities[i][0], cities[i][1], "o")
+        try:
+            pyplot.plot((cities[i][0], cities[i+1][0]), (cities[i][1],cities[i+1][1]), "-", color=cmap(i / float(len(cities))))
+        except IndexError:
+            pyplot.plot((cities[i][0], cities[0][0]), (cities[i][1],cities[0][1]), "-", color='purple')
     pyplot.show()
