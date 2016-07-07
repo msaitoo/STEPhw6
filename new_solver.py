@@ -2,6 +2,7 @@ import numpy
 import sys
 import matplotlib as mpl
 import matplotlib.pyplot as pyplot
+from test import test
 
 if (len(sys.argv) != 2):
     print "usage: python %s N" % sys.argv[0]
@@ -88,36 +89,36 @@ def decidenext(jyunban, ordered, area):
         jyunban.pop(index)
     return (ordered)
 
-def connectBelow(below, ordered = []):
+def startSouth(below, ordered = []):
     "Sort Southern cities into order"
-    jyunban = sortx(below, 'ascending')
+    jyunban = sortx(below, 'ascending')             #Decide starting city
     minami = len(jyunban)
     ordered.append(jyunban[0])
     jyunban.pop(0)
     
-    
-    findlast = getdistances(ordered[0], jyunban)
-    index = findlast.index(max(findlast))
+    alldistance = getdistances(ordered[0], jyunban) #Decide last southern city
+    index = alldistance.index(max(alldistance))
     furthest = jyunban[index]
-    
     jyunban.pop(index)
     
-    while len(ordered) < minami/2:
+    while len(ordered) < minami/2:                  #Route from start point
         decidenext(jyunban, ordered, 'south')
-        
-    second =  sortx(jyunban, 'descending')
-    minami2 = len(second)
+        test(ordered)
+    
+    second =  sortx(jyunban, 'descending')          #Route from end point
+    lensecond = len(second)
     gyaku = []
     gyaku.append(furthest)
-    
-    while len(gyaku) < minami2+1:
+    while len(gyaku) < lensecond+1:
         decidenext(second, gyaku, 'north')
-    for i in range(1,len(gyaku)+1):
+    
+    for i in range(1,len(gyaku)+1):                 #Put two routes together
         ordered.append(gyaku[-i])
     
+    #checkintercept(ordered)
     return ordered
 
-def connectAbove(above, ordered):
+def endNorth(above, ordered):
     "Sort Northern cities into order"
     jyunban = sortx(above, 'descending')
     
@@ -140,8 +141,8 @@ def totaldistance(ordered):
 
 south = divideCities(dat)[0]
 north = divideCities(dat)[1]
-southcities = connectBelow(south)
-allcities = connectAbove(north, southcities)
+southcities = startSouth(south)
+allcities = endNorth(north, southcities)
 
 travel = totaldistance(allcities)
 print travel
@@ -161,6 +162,7 @@ def graph(cities):
 print 'Would you like to graph the result? Type yes or no.'
 answer = raw_input()
 if answer == 'yes':
+    print'Lighter blue is the starting point'
     graph(allcities)
 else:
     print'Sure? Ok then, bye~~'
