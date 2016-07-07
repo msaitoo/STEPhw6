@@ -95,8 +95,25 @@ def connectBelow(below, ordered = []):
     ordered.append(jyunban[0])
     jyunban.pop(0)
     
-    while len(ordered) < minami:
+    
+    findlast = getdistances(ordered[0], jyunban)
+    index = findlast.index(max(findlast))
+    furthest = jyunban[index]
+    
+    jyunban.pop(index)
+    
+    while len(ordered) < minami/2:
         decidenext(jyunban, ordered, 'south')
+        
+    second =  sortx(jyunban, 'descending')
+    minami2 = len(second)
+    gyaku = []
+    gyaku.append(furthest)
+    
+    while len(gyaku) < minami2+1:
+        decidenext(second, gyaku, 'north')
+    for i in range(1,len(gyaku)+1):
+        ordered.append(gyaku[-i])
     
     return ordered
 
